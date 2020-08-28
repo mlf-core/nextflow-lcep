@@ -1,0 +1,13 @@
+name: lcep
+channels:
+    - defaults
+    - conda-forge
+dependencies:
+    - defaults::cudatoolkit=10.1
+    - defaults::python=3.7
+    - defaults::scikit-learn=0.23.2
+    - pip
+    - pip:
+      - pycuda==2019.1.2  # not on Conda
+      - system-intelligence==1.2.4  # not yet on Conda
+      - lcep-package==1.1.0
