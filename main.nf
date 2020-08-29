@@ -8,11 +8,11 @@
 ----------------------------------------------------------------------------------------
 */
 
-normal_filtered_tpm_ch = Channel.fromPath(params.normal_tpm)
-normal_replicates_ch = Channel.fromPath(params.normal_replicates)
-cancer_filtered_tpm_ch = Channel.fromPath(params.cancer_tpm)
-cancer_replicates_ch = Channel.fromPath(params.cancer_replicates)
-pathways_ch = Channel.fromPath(params.pathways)
+ch_normal_filtered_tpm = Channel.fromPath(params.normal_tpm)
+ch_normal_replicates = Channel.fromPath(params.normal_replicates)
+ch_cancer_filtered_tpm = Channel.fromPath(params.cancer_tpm)
+ch_cancer_replicates = Channel.fromPath(params.cancer_replicates)
+ch_pathways = Channel.fromPath(params.pathways)
 
 // TODO Refactor this and use tuples of files as input
 process replicate_removal_normal {
@@ -20,14 +20,14 @@ process replicate_removal_normal {
     publishDir "${params.outdir}/intermediate_results", mode: 'copy'
 
     input:
-    file normal_tpm from normal_filtered_tpm_ch
-    file normal_replicates from normal_replicates_ch
-    file cancer_tpm from cancer_filtered_tpm_ch
-    file cancer_replicates from cancer_replicates_ch
+    file normal_tpm from ch_normal_filtered_tpm
+    file normal_replicates from ch_normal_replicates
+    file cancer_tpm from ch_cancer_filtered_tpm
+    file cancer_replicates from ch_cancer_replicates
 
     output:
-    file 'lung_normal_tpm_total_filtered_wo_rep.tsv' into normal_filtered_wo_replicates_ch
-    file 'lung_cancer_tpm_total_filtered_wo_rep.tsv' into cancer_filtered_wo_replicates_ch
+    file 'lung_normal_tpm_total_filtered_wo_rep.tsv' into ch_normal_filtered_wo_replicates
+    file 'lung_cancer_tpm_total_filtered_wo_rep.tsv' into ch_cancer_filtered_wo_replicates
 
     script:
     """
@@ -41,13 +41,13 @@ process reduce_to_kegg_pathways {
     publishDir "${params.outdir}/intermediate_results", mode: 'copy'
 
     input:
-    file normal_lung_tpm from normal_filtered_wo_replicates_ch
-    file cancer_lung_tpm from cancer_filtered_wo_replicates_ch
-    file pathways from pathways_ch
+    file normal_lung_tpm from ch_normal_filtered_wo_replicates
+    file cancer_lung_tpm from ch_cancer_filtered_wo_replicates
+    file pathways from ch_pathways
 
     output:
-    file 'human_pathways_tpm_lung_normal.tsv' into normal_pathways_tpm_ch
-    file 'human_pathways_tpm_lung_cancer.tsv' into cancer_pathways_tpm_ch
+    file 'human_pathways_tpm_lung_normal.tsv' into ch_normal_pathways_tpm
+    file 'human_pathways_tpm_lung_cancer.tsv' into ch_cancer_pathways_tpm
 
     script:
     """
@@ -60,12 +60,12 @@ process generate_training_test_datasets {
     publishDir "${params.outdir}/intermediate_results", mode: 'copy'
 
     input:
-    file normal_pathways_tpm from normal_pathways_tpm_ch
-    file cancer_pathways_tpm from cancer_pathways_tpm_ch
+    file normal_pathways_tpm from ch_normal_pathways_tpm
+    file cancer_pathways_tpm from ch_cancer_pathways_tpm
 
     output:
-    file 'train.tsv' into training_data_ch
-    file 'test.tsv' into test_data_ch
+    file 'train.tsv' into ch_training_data
+    file 'test.tsv' into ch_test_data
 
     script:
     """
@@ -79,10 +79,10 @@ process predict_lcep {
     publishDir "${params.outdir}/results", mode: 'copy'
 
     input:
-    file to_predict from test_data_ch
+    file to_predict from ch_test_data
 
     output:
-    file 'predictions.csv' into predicted_ch
+    file 'predictions.csv' into ch_predicted
     
     script:
     """
