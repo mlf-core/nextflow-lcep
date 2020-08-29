@@ -86,7 +86,7 @@ process predict_lcep {
     
     script:
     """
-    lcep-package --input $to_predict --output predictions.csv
+    lcep-package --input $to_predict --output predictions.csv --cuda
     """
 }
 
