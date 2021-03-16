@@ -8,50 +8,26 @@
 ----------------------------------------------------------------------------------------
 */
 
-ch_normal_filtered_tpm = Channel.fromPath(params.normal_tpm)
-ch_normal_replicates = Channel.fromPath(params.normal_replicates)
-ch_cancer_filtered_tpm = Channel.fromPath(params.cancer_tpm)
-ch_cancer_replicates = Channel.fromPath(params.cancer_replicates)
+ch_liver_normal_tpm = Channel.fromPath(params.liver_normal_tpm)
+ch_liver_cancer_tpm = Channel.fromPath(params.liver_cancer_tpm)
 ch_pathways = Channel.fromPath(params.pathways)
-
-// TODO Refactor this and use tuples of files as input
-process replicate_removal_normal {
-    label 'with_cpus'
-    publishDir "${params.outdir}/intermediate_results", mode: 'copy'
-
-    input:
-    file normal_tpm from ch_normal_filtered_tpm
-    file normal_replicates from ch_normal_replicates
-    file cancer_tpm from ch_cancer_filtered_tpm
-    file cancer_replicates from ch_cancer_replicates
-
-    output:
-    file 'lung_normal_tpm_total_filtered_wo_rep.tsv' into ch_normal_filtered_wo_replicates
-    file 'lung_cancer_tpm_total_filtered_wo_rep.tsv' into ch_cancer_filtered_wo_replicates
-
-    script:
-    """
-    replicate_removal.py -t $normal_tpm -r $normal_replicates -o lung_normal_tpm_total_filtered_wo_rep.tsv
-    replicate_removal.py -t $cancer_tpm -r $cancer_replicates -o lung_cancer_tpm_total_filtered_wo_rep.tsv
-    """
-}
 
 process reduce_to_kegg_pathways {
     label 'with_cpus'
     publishDir "${params.outdir}/intermediate_results", mode: 'copy'
 
     input:
-    file normal_lung_tpm from ch_normal_filtered_wo_replicates
-    file cancer_lung_tpm from ch_cancer_filtered_wo_replicates
+    file liver_normal_tpm from ch_liver_normal_tpm
+    file liver_cancer_tpm from ch_liver_cancer_tpm
     file pathways from ch_pathways
 
     output:
-    file 'human_pathways_tpm_lung_normal.tsv' into ch_normal_pathways_tpm
-    file 'human_pathways_tpm_lung_cancer.tsv' into ch_cancer_pathways_tpm
+    file 'tpm_liver_cancerpathways_normal.tsv' into ch_normal_pathways_tpm
+    file 'tpm_liver_cancerpathways_cancer.tsv' into ch_cancer_pathways_tpm
 
     script:
     """
-    reduce_to_kegg_pathways.py -n $normal_lung_tpm -c $cancer_lung_tpm -t lung -hp $pathways
+    reduce_to_kegg_pathways.py -n $liver_normal_tpm -c $liver_cancer_tpm -t liver_cancerpathways -hp $pathways -o .
     """
 }
 
@@ -72,7 +48,7 @@ process generate_training_test_datasets {
     generate_train_test_subset.py -n $normal_pathways_tpm -c $cancer_pathways_tpm
     """
 }
-
+/*
 process predict_lcep {
     echo true
     label 'with_all_gpus'
@@ -103,3 +79,4 @@ process run_system_intelligence {
     system-intelligence all --output_format json --generate_html_table --output system_intelligence.json
     """
 }
+*/

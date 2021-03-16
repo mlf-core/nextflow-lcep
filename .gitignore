@@ -7,3 +7,4 @@ tests/
 testing/
 *.pyc
 .vscode
+.idea/*
