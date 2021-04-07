@@ -6,8 +6,6 @@ dependencies:
     - defaults::cudatoolkit=10.1
     - defaults::python=3.7
     - defaults::scikit-learn=0.23.2
-    - conda-forge::pigz=2.6
-    - conda-forge::tqdm=4.38.0
     - pip
     - pip:
       - pycuda==2019.1.2  # not on Conda
