@@ -4,8 +4,7 @@ import sys
 import time
 import logging
 import statistics
-from multiprocessing import Pool
-from tqdm import tqdm
+#from multiprocessing import Pool
 
 console = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -52,7 +51,7 @@ def main(inputfile, outputfile, processes, genelength_file):
     #pool = Pool(processes=processes)
     #tpm_table = pool.map(compute_single_tpm, transposed_counts)
     tpm_table = []
-    for gene_counts in tqdm(transposed_counts):
+    for gene_counts in transposed_counts:
         tpm_table.append(compute_single_tpm(gene_counts))
 
     # transpose back
