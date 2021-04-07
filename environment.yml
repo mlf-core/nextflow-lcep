@@ -6,8 +6,10 @@ dependencies:
     - defaults::cudatoolkit=10.1
     - defaults::python=3.7
     - defaults::scikit-learn=0.23.2
+    - conda-forge::pigz=2.6
+    - conda-forge::tqdm=4.38.0
     - pip
     - pip:
       - pycuda==2019.1.2  # not on Conda
-      - system-intelligence==1.2.4  # not yet on Conda
-      - lcep-package==1.2.0
+      - system-intelligence==2.0.2  # not yet on Conda
+      #- lcep-package==1.2.0
