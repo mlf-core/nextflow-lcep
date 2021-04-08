@@ -10,4 +10,4 @@ dependencies:
     - pip:
       - pycuda==2019.1.2  # not on Conda
       - system-intelligence==2.0.2  # not yet on Conda
-      #- lcep-package==1.2.0
+      - lcep-package==2.0.1
