@@ -147,29 +147,35 @@ process generate_training_test_datasets {
     generate_train_test_subset.py -n $normal_pathways_tpm -c $cancer_pathways_tpm
     """
 }
-/*
+
 process predict_lcep {
-echo true
-label 'with_all_gpus'
-publishDir "${params.outdir}/results", mode: 'copy'
-input:
-file to_predict from ch_test_data
-output:
-file 'predictions.csv' into ch_predicted
-script:
-"""
-lcep-package --input $to_predict --output predictions.csv --cuda
-"""
+    echo true
+    label 'with_all_gpus'
+    publishDir "${params.outdir}/results", mode: 'copy'
+
+    input:
+    file to_predict from ch_test_data
+
+    output:
+    file 'predictions.csv' into ch_predicted
+
+    script:
+    """
+    lcep-package --input $to_predict --output predictions.csv
+    """
 }
+/*
 process run_system_intelligence {
-publishDir "${params.outdir}/results", mode: 'copy'
-label 'with_all_gpus'
-output:
-file 'system_intelligence.html'
-file 'system_intelligence.json'
-script:
-"""
-system-intelligence all --output_format json --generate_html_table --output system_intelligence.json
-"""
+    publishDir "${params.outdir}/results", mode: 'copy'
+    label 'with_all_gpus'
+
+    output:
+    file 'system_intelligence.html'
+    file 'system_intelligence.json'
+
+    script:
+    """
+    system-intelligence all --output_format json --generate_html_table --output system_intelligence.json
+    """
 }
 */
