@@ -81,6 +81,7 @@ process get_gene_lengths {
     output:
     file 'gencode.v25.annotation.gtf.genelength' into ch_genelengths
 
+    beforeScript 'chmod o+rw .'
     script:
     """
     wget $gtf
