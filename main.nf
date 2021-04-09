@@ -29,7 +29,6 @@ process filter_gtex {
     output:
     file 'filtered_gtex_counts.tsv' into ch_filtered_gtex_counts
 
-    beforeScript 'chmod o+rw .'
     script:
     """
     wget $gtex_counts_file
@@ -48,7 +47,6 @@ process filter_tcga {
     output:
     file 'filtered_tcga_counts.tsv' into ch_filtered_tcga_counts
 
-    beforeScript 'chmod o+rw .'
     script:
     """
     wget $tcga_counts_file
@@ -83,7 +81,6 @@ process get_gene_lengths {
     output:
     file 'gencode.v25.annotation.gtf.genelength' into ch_genelengths
 
-    beforeScript 'chmod o+rw .'
     script:
     """
     wget $gtf
