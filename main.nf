@@ -161,10 +161,10 @@ process predict_lcep {
 
     script:
     """
-    lcep-package --input $to_predict --output predictions.csv
+    lcep-package --input $to_predict --output predictions.csv --cuda
     """
 }
-/*
+
 process run_system_intelligence {
     publishDir "${params.outdir}/results", mode: 'copy'
     label 'with_all_gpus'
@@ -178,4 +178,4 @@ process run_system_intelligence {
     system-intelligence all --output_format json --generate_html_table --output system_intelligence.json
     """
 }
-*/
+
