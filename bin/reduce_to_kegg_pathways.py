@@ -22,7 +22,8 @@ LOG.setLevel(logging.INFO)
 @click.option('-t', '--tissue', prompt='tissue name', help='tissue name', required=True)
 @click.option('-hp', '--human_pathways', prompt='human pathways',
               help='all human pathways (KEGG)', required=True)
-def main(normal_samples, cancer_samples, tissue, human_pathways):
+@click.option('-o', '--output_path', prompt='output path', help='output file for tpm tables', required=True)
+def main(normal_samples, cancer_samples, tissue, human_pathways, output_path):
     # start timer
     start = time.time()
 
@@ -30,6 +31,11 @@ def main(normal_samples, cancer_samples, tissue, human_pathways):
     LOG.info("Parse TPM tables")
     transposed_counts_cancer, gene_names, sample_names_cancer = parse_counts_table(cancer_samples)
     transposed_counts_normal, gene_names, sample_names_normal = parse_counts_table(normal_samples)
+    
+    # remove ".x" suffix of ENSEMBL ids
+    gene_names = [[x.split(".")[0] for x in gene_names[0]], gene_names[1]]
+    print(len(gene_names[0]))
+    print(len(list(set(gene_names[0]))))
 
     # print number of samples to LOG
     LOG.info("Number cancer samples: " + str(len(transposed_counts_cancer)))
@@ -52,8 +58,8 @@ def main(normal_samples, cancer_samples, tissue, human_pathways):
     LOG.info("Number of genes after feature reduction all human pathways: " + str(len(human_pathways_cancer_tpm[0])))
 
     LOG.info("Write reduced TPM tables to file")
-    outpath_human_pathway_cancer = "human_pathways_tpm_" + tissue + "_cancer.tsv"
-    outpath_human_pathway_normal = "human_pathways_tpm_" + tissue + "_normal.tsv"
+    outpath_human_pathway_cancer = output_path + "/tpm_" + tissue + "_cancer.tsv"
+    outpath_human_pathway_normal = output_path + "/tpm_" + tissue + "_normal.tsv"
 
     generate_tpm_table(outpath_human_pathway_cancer, human_pathways_cancer_tpm, gene_names_human_pathways,
                        sample_names_cancer)
