@@ -16,4 +16,4 @@ Usage
 Build the Docker container using ``docker build -t nextflow/lcep:1.0.0 .``.
 
 Next, run the pipeline via
-``nextflow run main.nf -with-docker --normal_tpm data/lung_normal_tpm_total_filtered.tsv --cancer_tpm data/lung_cancer_tpm_total_filtered.tsv --normal_replicates data/lung_normal_replicates.txt --cancer_replicates data/lung_cancer_replicates.txt --pathways data/pathways_ensembl.csv``
+``nextflow run main.nf -with-docker --pathways pathways_ensembl_cancer_2021``
